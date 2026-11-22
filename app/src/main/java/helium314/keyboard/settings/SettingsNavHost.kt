@@ -27,7 +27,9 @@ import helium314.keyboard.settings.screens.LanguageScreen
 import helium314.keyboard.settings.screens.MainSettingsScreen
 import helium314.keyboard.settings.screens.PersonalDictionariesScreen
 import helium314.keyboard.settings.screens.PersonalDictionaryScreen
+import helium314.keyboard.settings.screens.PersonalSettingsScreen
 import helium314.keyboard.settings.screens.PreferencesScreen
+
 import helium314.keyboard.settings.screens.SecondaryLayoutScreen
 import helium314.keyboard.settings.screens.SubtypeScreen
 import helium314.keyboard.settings.screens.TextCorrectionScreen

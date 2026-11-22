@@ -930,13 +930,15 @@ public class LatinIME extends InputMethodService implements
         }
     }
 
-    @Override
+        @Override
     public void onWindowHidden() {
         super.onWindowHidden();
         Log.i(TAG, "onWindowHidden");
+        mOfflineVoiceManager.stopListening();
         closeMainKeyboard();
         clearNavigationBarColor();
     }
+
 
     void onFinishInputInternal() {
         super.onFinishInput();

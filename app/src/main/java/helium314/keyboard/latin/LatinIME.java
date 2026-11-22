@@ -962,9 +962,11 @@ public class LatinIME extends InputMethodService implements
         mKeyboardActionListener.resetMetaState();
     }
 
-    protected void deallocateMemory() {
+        protected void deallocateMemory() {
         mKeyboardSwitcher.deallocateMemory();
+        mOfflineVoiceManager.releaseModel();
     }
+
 
     @Override
     public void onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd,

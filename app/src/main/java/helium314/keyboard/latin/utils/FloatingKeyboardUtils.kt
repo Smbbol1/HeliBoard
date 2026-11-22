@@ -14,13 +14,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import helium314.keyboard.event.HapticEvent
 import helium314.keyboard.keyboard.KeyboardSwitcher
+import helium314.keyboard.keyboard.internal.KeyboardIconsSet
+import helium314.keyboard.keyboard.internal.keyboard_parser.floris.KeyCode
+import helium314.keyboard.latin.AudioAndHapticFeedbackManager
 import helium314.keyboard.latin.R
+import helium314.keyboard.latin.common.ColorType
 import helium314.keyboard.latin.define.DebugFlags
+import helium314.keyboard.latin.settings.Defaults
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.settings.setFloatingSize
 
 object FloatingKeyboardUtils {
+
     private val TAG = this::class.java.simpleName
     private val windowFrame = Rect()
     private var extraHeight = 0f

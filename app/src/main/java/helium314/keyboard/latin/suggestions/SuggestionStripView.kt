@@ -498,11 +498,32 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         }
     }
 
-        fun updateVoiceKey() {
+            fun updateVoiceKey() {
         val show = true
         toolbar.findViewWithTag<View>(ToolbarKey.VOICE)?.isVisible = show
         pinnedKeys.findViewWithTag<View>(ToolbarKey.VOICE)?.isVisible = show
     }
+
+    fun setVoiceListeningState(isListening: Boolean) {
+        val voiceViews = listOfNotNull(
+            toolbar.findViewWithTag<View>(ToolbarKey.VOICE),
+            pinnedKeys.findViewWithTag<View>(ToolbarKey.VOICE)
+        )
+        for (view in voiceViews) {
+            if (!isListening) {
+                Settings.getValues().mColors.setBackground(view, ColorType.STRIP_BACKGROUND)
+            } else {
+                val greenCircle = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    gradientType = GradientDrawable.RADIAL_GRADIENT
+                    colors = intArrayOf(0xAA00C853.toInt(), Color.TRANSPARENT)
+                    gradientRadius = resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_height) / 1.9f
+                }
+                view.background = greenCircle
+            }
+        }
+    }
+
 
 
     private fun updateKeys() {

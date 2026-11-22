@@ -614,10 +614,12 @@ public class LatinIME extends InputMethodService implements
         return mDictionaryFacilitator.localesAndConfidences();
     }
 
-    @Override
+        @Override
     public void onDestroy() {
+        mOfflineVoiceManager.destroy();
         mClipboardHistoryManager.onDestroy();
         mDictionaryFacilitator.closeDictionaries();
+
         mSettings.onDestroy();
         mReceiver.unregisterAll(this);
         mStatsUtilsManager.onDestroy(this /* context */);

@@ -22,30 +22,9 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
 
     private var model: Model? = null
     private var speechService: SpeechService? = null
-        private var isListening = false
+    private var isListening = false
     private var isUnpacking = false
     private val mainHandler = Handler(Looper.getMainLooper())
-
-    private val silenceTimeoutRunnable = Runnable {
-        if (isListening) {
-            stopListening()
-        }
-    }
-
-    private fun getSilenceTimeoutMs(): Long {
-        val prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(ime)
-        val seconds = prefs.getInt(helium314.keyboard.latin.settings.Defaults.KEY_VOICE_SILENCE_TIMEOUT, helium314.keyboard.latin.settings.Defaults.PREF_VOICE_SILENCE_TIMEOUT)
-        return seconds * 1000L
-    }
-
-    private fun resetSilenceTimer() {
-        mainHandler.removeCallbacks(silenceTimeoutRunnable)
-        val timeoutMs = getSilenceTimeoutMs()
-        if (timeoutMs > 0L) {
-            mainHandler.postDelayed(silenceTimeoutRunnable, timeoutMs)
-        }
-    }
-
 
     private val silenceTimeoutRunnable = Runnable {
         if (isListening) {

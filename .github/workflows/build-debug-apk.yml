@@ -23,8 +23,8 @@ jobs:
           unzip -q temp-models/vosk-model-small-es-0.42.zip
           mv vosk-model-small-es-0.42/* app/src/main/assets/model-es/
           rm -rf vosk-model-small-es-0.42 temp-models
-          python3 -c 'p="app/src/main/AndroidManifest.xml"; d="schemas."+"android.com"; s=open(p).read().replace("http://android.com\"",f"http://{d}/apk/res/android\"").replace("http://android.com\">",f"http://{d}/tools\">"); open(p,"w").write(s)'
-s.replace('xmlns:tools="http://android.com"', f'xmlns:tools="http://{d}/tools"')
+          python3 -c 'p="app/src/main/AndroidManifest.xml"; d="schemas."+"android.com"; lines=open(p).readlines(); lines[1]=f"<manifest xmlns:android=\"http://{d}/apk/res/android\"\n"; lines[2]=f"    xmlns:tools=\"http://{d}/tools\">\n"; open(p,"w").writelines(lines)'
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:

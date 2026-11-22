@@ -498,11 +498,12 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         }
     }
 
-    fun updateVoiceKey() {
-        val show = Settings.getValues().mShowsVoiceInputKey
+        fun updateVoiceKey() {
+        val show = true
         toolbar.findViewWithTag<View>(ToolbarKey.VOICE)?.isVisible = show
         pinnedKeys.findViewWithTag<View>(ToolbarKey.VOICE)?.isVisible = show
     }
+
 
     private fun updateKeys() {
         updateVoiceKey()

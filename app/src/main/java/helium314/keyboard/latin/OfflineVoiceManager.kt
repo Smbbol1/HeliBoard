@@ -64,15 +64,16 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         }
     }
 
-    private fun startListening() {
+        private fun startListening() {
         try {
             val recognizer = Recognizer(model, 16000.0f)
             speechService = SpeechService(recognizer, 16000.0f)
             speechService?.startListening(this)
             isListening = true
-            showToast("Escuchando (Offline)...")
+            ime.updateVoiceIndicator(true)
         } catch (e: Exception) {
             isListening = false
+            ime.updateVoiceIndicator(false)
             showToast("Error iniciando micrófono: ${e.message}")
         }
     }
@@ -82,7 +83,9 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         speechService?.shutdown()
         speechService = null
         isListening = false
+        ime.updateVoiceIndicator(false)
     }
+
 
     fun destroy() {
         stopListening()

@@ -1311,9 +1311,18 @@ public class LatinIME extends InputMethodService implements
             mainKeyboardView.showGestureFloatingPreviewText(suggestedWords, dismissGestureFloatingPreviewText);
     }
 
-    public boolean hasSuggestionStripView() {
+        public boolean hasSuggestionStripView() {
         return null != mSuggestionStripView;
     }
+
+    public void updateVoiceIndicator(final boolean isListening) {
+        mHandler.post(() -> {
+            if (hasSuggestionStripView()) {
+                mSuggestionStripView.setVoiceListeningState(isListening);
+            }
+        });
+    }
+
 
     private void setSuggestedWords(SuggestedWords suggestedWords) {
         SettingsValues currentSettingsValues = mSettings.getCurrent();

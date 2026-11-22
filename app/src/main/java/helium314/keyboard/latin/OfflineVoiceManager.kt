@@ -35,11 +35,11 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
             return
         }
 
-        if (isListening) {
+                if (isListening) {
             stopListening()
-            showToast("Micrófono detenido")
             return
         }
+
 
         if (model == null) {
             if (isUnpacking) {

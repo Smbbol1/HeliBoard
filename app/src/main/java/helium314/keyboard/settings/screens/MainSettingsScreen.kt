@@ -105,10 +105,16 @@ fun MainSettingsScreen(
                     onClick = onClickDictionaries,
                     icon = R.drawable.ic_dictionary
                 ) { NextScreenIcon() }
-                Preference(
+                                Preference(
                     name = stringResource(R.string.settings_screen_advanced),
                     onClick = onClickAdvanced,
                     icon = R.drawable.ic_settings_advanced
+                ) { NextScreenIcon() }
+                Preference(
+                    name = "Ajustes personales",
+                    description = "Temporizador de micrófono offline y opciones propias",
+                    onClick = onClickPersonal,
+                    icon = R.drawable.ic_settings_preferences
                 ) { NextScreenIcon() }
                 Preference(
                     name = stringResource(R.string.settings_screen_about),
@@ -126,7 +132,8 @@ private fun PreviewScreen() {
     initPreview(LocalContext.current)
     Theme(previewDark) {
         Surface {
-            MainSettingsScreen({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+            MainSettingsScreen({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
         }
     }
 }
+

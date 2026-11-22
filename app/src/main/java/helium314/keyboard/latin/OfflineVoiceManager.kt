@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -20,10 +22,11 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
     private var speechService: SpeechService? = null
     private var isListening = false
     private var isUnpacking = false
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     fun toggleListening() {
         if (ContextCompat.checkSelfPermission(ime, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(ime, "Activa el permiso de Micrófono en Ajustes de la app", Toast.LENGTH_LONG).show()
+            showToast("Activa el permiso de Micrófono en Ajustes de HeliBoard")
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.fromParts("package", ime.packageName, null)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -34,16 +37,17 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
 
         if (isListening) {
             stopListening()
+            showToast("Micrófono detenido")
             return
         }
 
         if (model == null) {
             if (isUnpacking) {
-                Toast.makeText(ime, "Preparando modelo de voz offline, espera un segundo...", Toast.LENGTH_SHORT).show()
+                showToast("Preparando modelo de voz offline, espera...")
                 return
             }
             isUnpacking = true
-            Toast.makeText(ime, "Cargando voz offline por primera vez...", Toast.LENGTH_SHORT).show()
+            showToast("Cargando voz offline por primera vez...")
             StorageService.unpack(ime, "model-es", "model",
                 { loadedModel ->
                     model = loadedModel
@@ -52,7 +56,7 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
                 },
                 { exception ->
                     isUnpacking = false
-                    Toast.makeText(ime, "Error al cargar modelo: ${exception.message}", Toast.LENGTH_LONG).show()
+                    showToast("Error al cargar modelo: ${exception.message}")
                 }
             )
         } else {
@@ -66,9 +70,10 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
             speechService = SpeechService(recognizer, 16000.0f)
             speechService?.startListening(this)
             isListening = true
-            Toast.makeText(ime, "Escuchando (Offline)...", Toast.LENGTH_SHORT).show()
+            showToast("Escuchando (Offline)...")
         } catch (e: Exception) {
-            Toast.makeText(ime, "Error iniciando micrófono: ${e.message}", Toast.LENGTH_SHORT).show()
+            isListening = false
+            showToast("Error iniciando micrófono: ${e.message}")
         }
     }
 
@@ -86,31 +91,37 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
     }
 
     override fun onPartialResult(hypothesis: String?) {
-        // Opcional: aquí se reciben resultados parciales mientras hablas
+        // Resultados parciales mientras hablas
     }
 
     override fun onResult(hypothesis: String?) {
         val text = parseText(hypothesis)
         if (text.isNotEmpty()) {
-            ime.onTextInput("$text ")
+            mainHandler.post { ime.onTextInput("$text ") }
         }
     }
 
     override fun onFinalResult(hypothesis: String?) {
         val text = parseText(hypothesis)
         if (text.isNotEmpty()) {
-            ime.onTextInput("$text ")
+            mainHandler.post { ime.onTextInput("$text ") }
         }
         stopListening()
     }
 
     override fun onError(exception: Exception?) {
         stopListening()
-        Toast.makeText(ime, "Error de voz: ${exception?.message}", Toast.LENGTH_SHORT).show()
+        showToast("Error de voz: ${exception?.message}")
     }
 
     override fun onTimeout() {
         stopListening()
+    }
+
+    private fun showToast(msg: String) {
+        mainHandler.post {
+            Toast.makeText(ime, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun parseText(jsonStr: String?): String {

@@ -11,6 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Clonar modelo Vosk en español
+        uses: actions/checkout@v4
+        with:
+          repository: kercre123/vosk-models
+          path: temp-models
+
+      - name: Preparar modelo Vosk en assets
+        run: |
+          mkdir -p app/src/main/assets/model-es
+          unzip -q temp-models/vosk-model-small-es-0.42.zip
+          mv vosk-model-small-es-0.42/* app/src/main/assets/model-es/
+          rm -rf vosk-model-small-es-0.42 temp-models
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -18,14 +31,6 @@ jobs:
           distribution: 'temurin'
 
       - uses: gradle/actions/setup-gradle@v3
-
-      - name: Descargar modelo Vosk en español
-        run: |
-          mkdir -p app/src/main/assets/model-es
-          curl -L -f -o vosk-model-small-es-0.42.zip "https://githubusercontent.com"
-          unzip -q vosk-model-small-es-0.42.zip
-          mv vosk-model-small-es-0.42/* app/src/main/assets/model-es/
-          rm -rf vosk-model-small-es-0.42 vosk-model-small-es-0.42.zip
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

@@ -586,15 +586,76 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         pinnedKeys.addView(copy)
     }
 
-    private fun setupKey(view: ImageButton, colors: Colors) {
+        private fun setupKey(view: ImageButton, colors: Colors) {
         view.setOnClickListener(this)
         view.setOnLongClickListener(this)
         (view.layoutParams as LinearLayout.LayoutParams).weight = 1f
         colors.setColor(view, ColorType.TOOL_BAR_KEY)
         colors.setBackground(view, ColorType.STRIP_BACKGROUND)
+
+        view.setOnDragListener { targetView, event ->
+            val draggedView = event.localState as? View ?: return@setOnDragListener false
+            val targetParent = targetView.parent as? ViewGroup ?: return@setOnDragListener false
+
+            if (draggedView.parent !== targetParent) return@setOnDragListener false
+
+            when (event.action) {
+                DragEvent.ACTION_DRAG_STARTED -> true
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    if (draggedView !== targetView) {
+                        targetView.alpha = 0.5f
+                    }
+                    true
+                }
+                DragEvent.ACTION_DRAG_EXITED -> {
+                    targetView.alpha = 1.0f
+                    true
+                }
+                DragEvent.ACTION_DROP -> {
+                    targetView.alpha = 1.0f
+                    if (draggedView !== targetView) {
+                        val key1 = draggedView.tag as? ToolbarKey
+                        val key2 = targetView.tag as? ToolbarKey
+                        if (key1 != null && key2 != null) {
+                            swapViewsInContainer(targetParent, draggedView, targetView)
+                            val isPinned = targetParent === pinnedKeys
+                            swapToolbarKeys(context.prefs(), isPinned, key1, key2)
+                            AudioAndHapticFeedbackManager.getInstance()
+                                .performHapticAndAudioFeedback(KeyCode.NOT_SPECIFIED, targetView, HapticEvent.KEY_PRESS)
+                        }
+                    }
+                    true
+                }
+                DragEvent.ACTION_DRAG_ENDED -> {
+                    targetView.alpha = 1.0f
+                    draggedView.alpha = 1.0f
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun swapViewsInContainer(container: ViewGroup, view1: View, view2: View) {
+        val index1 = container.indexOfChild(view1)
+        val index2 = container.indexOfChild(view2)
+        if (index1 == -1 || index2 == -1 || index1 == index2) return
+
+        if (index1 < index2) {
+            container.removeViewAt(index2)
+            container.removeViewAt(index1)
+            container.addView(view2, index1)
+            container.addView(view1, index2)
+        } else {
+            container.removeViewAt(index1)
+            container.removeViewAt(index2)
+            container.addView(view1, index2)
+            container.addView(view2, index1)
+        }
     }
 
     companion object {
+
         @JvmField
         var DEBUG_SUGGESTIONS = false
         private const val DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.5f

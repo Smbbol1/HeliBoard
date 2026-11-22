@@ -169,9 +169,11 @@ object SettingsDestination {
     const val PersonalDictionary = "personal_dictionary/"
     const val Languages = "languages"
     const val Subtype = "subtype/"
-    const val Layouts = "layouts"
+        const val Layouts = "layouts"
     const val Dictionaries = "dictionaries"
+    const val Personal = "personal"
     val navTarget = MutableStateFlow(Settings)
+
 
     private val navScope = CoroutineScope(Dispatchers.Default)
     fun navigateTo(target: String) {

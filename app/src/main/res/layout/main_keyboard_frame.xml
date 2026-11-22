@@ -87,11 +87,19 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/config_floating_handle_height"
             android:src="@drawable/ic_arrow_horizontal"/>
-        <ImageView
+                <ImageView
             android:id="@+id/drag_handle"
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/config_floating_handle_height"
             android:src="@drawable/ic_drag_indicator"/>
+        <ImageView
+            android:id="@+id/exit_floating_handle"
+            android:layout_width="@dimen/config_floating_handle_height"
+            android:layout_height="@dimen/config_floating_handle_height"
+            android:padding="2dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Salir de ventana flotante" />
     </LinearLayout>
 </LinearLayout>
+

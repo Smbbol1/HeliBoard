@@ -6,19 +6,23 @@
 package helium314.keyboard.latin.suggestions
 
 import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.DragEvent
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
 import android.view.MotionEvent
+
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup

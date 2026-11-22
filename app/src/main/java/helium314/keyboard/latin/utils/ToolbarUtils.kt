@@ -278,4 +278,24 @@ private fun repeatToolbarKey(view: View, onClick: (view: View) -> Unit) {
     }, view.resources.getInteger(R.integer.config_key_repeat_interval).toLong())
 }
 
+fun swapToolbarKeys(prefs: SharedPreferences, isPinned: Boolean, key1: ToolbarKey, key2: ToolbarKey) {
+    if (key1 == key2) return
+    val prefName = if (isPinned) Settings.PREF_PINNED_TOOLBAR_KEYS else Settings.PREF_TOOLBAR_KEYS
+    val defaultPref = if (isPinned) defaultPinnedToolbarPref else defaultToolbarPref
+
+    val string = prefs.getString(prefName, defaultPref) ?: defaultPref
+    val entries = string.split(Separators.ENTRY).toMutableList()
+
+    val index1 = entries.indexOfFirst { it.startsWith(key1.name + Separators.KV) }
+    val index2 = entries.indexOfFirst { it.startsWith(key2.name + Separators.KV) }
+
+    if (index1 != -1 && index2 != -1) {
+        val temp = entries[index1]
+        entries[index1] = entries[index2]
+        entries[index2] = temp
+        prefs.edit { putString(prefName, entries.joinToString(Separators.ENTRY)) }
+    }
+}
+
 private var customToolbarKeyCodes: EnumMap<ToolbarKey, Pair<Int?, Int?>>? = null
+

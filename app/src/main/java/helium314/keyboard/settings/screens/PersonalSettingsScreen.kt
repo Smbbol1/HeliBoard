@@ -8,6 +8,7 @@ import helium314.keyboard.latin.settings.Defaults
 import helium314.keyboard.settings.SearchSettingsScreen
 import helium314.keyboard.settings.Setting
 import helium314.keyboard.settings.preferences.SliderPreference
+import helium314.keyboard.settings.preferences.SwitchPreference
 
 @Composable
 fun PersonalSettingsScreen(
@@ -16,7 +17,10 @@ fun PersonalSettingsScreen(
     SearchSettingsScreen(
         onClickBack = onClickBack,
         title = "Ajustes personales",
-        settings = listOf(Defaults.KEY_VOICE_SILENCE_TIMEOUT)
+        settings = listOf(
+            Defaults.KEY_VOICE_SILENCE_TIMEOUT,
+            Defaults.KEY_MOVE_PINNED_KEYS
+        )
     )
 }
 
@@ -37,5 +41,14 @@ fun createPersonalSettings(context: Context) = listOf(
             range = 0f..300f,
             stepSize = 5
         )
+    },
+    Setting(context, Defaults.KEY_MOVE_PINNED_KEYS, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Mover teclas ancladas",
+            key = setting.key,
+            default = Defaults.PREF_MOVE_PINNED_KEYS,
+            description = "Mantén presionado y arrastra un icono en la barra para intercambiar su posición"
+        )
     }
 )
+

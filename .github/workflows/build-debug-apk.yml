@@ -19,14 +19,13 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v3
 
-            - name: Descargar modelo Vosk en español
+      - name: Descargar modelo Vosk en español
         run: |
           mkdir -p app/src/main/assets/model-es
-          curl -L -f -o vosk-model-small-es-0.42.zip https://github.com
+          curl -L -f -A "Mozilla/5.0" -o vosk-model-small-es-0.42.zip https://alphacephei.com
           unzip -q vosk-model-small-es-0.42.zip
           mv vosk-model-small-es-0.42/* app/src/main/assets/model-es/
           rm -rf vosk-model-small-es-0.42 vosk-model-small-es-0.42.zip
-
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

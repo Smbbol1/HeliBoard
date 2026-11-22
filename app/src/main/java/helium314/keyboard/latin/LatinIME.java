@@ -1246,14 +1246,16 @@ public class LatinIME extends InputMethodService implements
         mKeyboardActionListener.onCodeInput(codePoint, x, y, isKeyRepeat);
     }
 
-    // This method is public for testability of LatinIME, but also in the future it should
+        // This method is public for testability of LatinIME, but also in the future it should
     // completely replace #onCodeInput.
     public void onEvent(@NonNull final Event event) {
         if (KeyCode.VOICE_INPUT == event.getKeyCode()) {
-            mRichImm.switchToShortcutIme(this);
+            mOfflineVoiceManager.toggleListening();
+            return;
         }
         InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event, mKeyboardSwitcher.getKeyboardCapsMode(), mHandler);
+
         updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }

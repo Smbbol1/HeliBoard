@@ -201,7 +201,10 @@ object Defaults {
     const val PREF_SAVE_SUBTYPE_PER_APP = false
         const val PREF_SPELLCHECK_SUGGEST = true
     const val PREF_SHOW_ONLY_TOOLBAR_WITH_HARDWARE_KEYBOARD = false
-    const val KEY_VOICE_SILENCE_TIMEOUT = "pref_voice_silence_timeout"
+        const val KEY_VOICE_SILENCE_TIMEOUT = "pref_voice_silence_timeout"
     const val PREF_VOICE_SILENCE_TIMEOUT = 10 // segundos por defecto (0 a 300)
+    const val KEY_MOVE_PINNED_KEYS = "pref_move_pinned_keys"
+    const val PREF_MOVE_PINNED_KEYS = false
 }
+
 

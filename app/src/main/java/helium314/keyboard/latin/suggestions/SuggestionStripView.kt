@@ -366,10 +366,29 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         }
     }
 
-    // actually private stuff
+        // actually private stuff
 
     private fun onLongClickToolbarKey(view: View) {
         val tag = view.tag as? ToolbarKey ?: return
+        val isMoveEnabled = context.prefs().getBoolean(Defaults.KEY_MOVE_PINNED_KEYS, Defaults.PREF_MOVE_PINNED_KEYS)
+
+        if (isMoveEnabled) {
+            val parentGroup = view.parent as? ViewGroup ?: return
+            if (parentGroup === toolbar || parentGroup === pinnedKeys) {
+                AudioAndHapticFeedbackManager.getInstance().performHapticFeedback(this, HapticEvent.KEY_LONG_PRESS)
+                val clipData = ClipData.newPlainText("toolbar_key", tag.name)
+                val shadowBuilder = View.DragShadowBuilder(view)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    view.startDragAndDrop(clipData, shadowBuilder, view, 0)
+                } else {
+                    @Suppress("DEPRECATION")
+                    view.startDrag(clipData, shadowBuilder, view, 0)
+                }
+                return
+            }
+        }
+
         if (!Settings.getValues().mQuickPinToolbarKeys || view.parent === pinnedKeys) {
             onLongClickToolbarKey(view) { code, isRepeat -> listener.onCodeInput(code, Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE, isRepeat) }
         } else if (view.parent === toolbar) {
@@ -388,6 +407,7 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
     }
 
     @SuppressLint("ClickableViewAccessibility") // no need for View#performClick, we only return false mostly anyway
+
     private fun onLongClickSuggestion(wordView: TextView): Boolean {
         var showIcon = true
         if (wordView.tag is Int) {

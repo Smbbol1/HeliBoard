@@ -44,13 +44,22 @@ fun createPersonalSettings(context: Context) = listOf(
             stepSize = 5
         )
     },
-    Setting(context, Defaults.KEY_MOVE_PINNED_KEYS, R.string.ime_settings) { setting ->
+        Setting(context, Defaults.KEY_MOVE_PINNED_KEYS, R.string.ime_settings) { setting ->
         SwitchPreference(
             name = "Mover teclas ancladas",
             key = setting.key,
             default = Defaults.PREF_MOVE_PINNED_KEYS,
             description = "Mantén presionado y arrastra un icono en la barra para intercambiar su posición"
         )
+    },
+    Setting(context, Defaults.KEY_FLOATING_EXIT_BUTTON, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Botón salir de ventana flotante",
+            key = setting.key,
+            default = Defaults.PREF_FLOATING_EXIT_BUTTON,
+            description = "Muestra un icono en la esquina inferior derecha del teclado flotante para volver al modo normal"
+        )
     }
 )
+
 

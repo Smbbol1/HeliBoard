@@ -9,6 +9,8 @@ import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import helium314.keyboard.latin.settings.Defaults
+import helium314.keyboard.latin.utils.prefs
 import org.json.JSONObject
 import org.vosk.Model
 import org.vosk.Recognizer
@@ -24,6 +26,25 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
     private var isUnpacking = false
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    private val silenceTimeoutRunnable = Runnable {
+        if (isListening) {
+            stopListening()
+        }
+    }
+
+    private fun getSilenceTimeoutMs(): Long {
+        val seconds = ime.prefs().getInt(Defaults.KEY_VOICE_SILENCE_TIMEOUT, Defaults.PREF_VOICE_SILENCE_TIMEOUT)
+        return seconds * 1000L
+    }
+
+    private fun resetSilenceTimer() {
+        mainHandler.removeCallbacks(silenceTimeoutRunnable)
+        val timeoutMs = getSilenceTimeoutMs()
+        if (timeoutMs > 0L) {
+            mainHandler.postDelayed(silenceTimeoutRunnable, timeoutMs)
+        }
+    }
+
     fun toggleListening() {
         if (ContextCompat.checkSelfPermission(ime, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             showToast("Activa el permiso de Micrófono en Ajustes de HeliBoard")
@@ -35,11 +56,10 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
             return
         }
 
-                if (isListening) {
+        if (isListening) {
             stopListening()
             return
         }
-
 
         if (model == null) {
             if (isUnpacking) {
@@ -47,7 +67,6 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
                 return
             }
             isUnpacking = true
-            showToast("Cargando voz offline por primera vez...")
             StorageService.unpack(ime, "model-es", "model",
                 { loadedModel ->
                     model = loadedModel
@@ -64,13 +83,14 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         }
     }
 
-        private fun startListening() {
+    private fun startListening() {
         try {
             val recognizer = Recognizer(model, 16000.0f)
             speechService = SpeechService(recognizer, 16000.0f)
             speechService?.startListening(this)
             isListening = true
             ime.updateVoiceIndicator(true)
+            resetSilenceTimer()
         } catch (e: Exception) {
             isListening = false
             ime.updateVoiceIndicator(false)
@@ -79,6 +99,7 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
     }
 
     fun stopListening() {
+        mainHandler.removeCallbacks(silenceTimeoutRunnable)
         speechService?.stop()
         speechService?.shutdown()
         speechService = null
@@ -86,20 +107,28 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         ime.updateVoiceIndicator(false)
     }
 
+    fun releaseModel() {
+        if (!isListening && model != null) {
+            model?.close()
+            model = null
+        }
+    }
 
     fun destroy() {
         stopListening()
-        model?.close()
-        model = null
+        releaseModel()
     }
 
     override fun onPartialResult(hypothesis: String?) {
-        // Resultados parciales mientras hablas
+        if (!hypothesis.isNullOrEmpty() && hypothesis.contains("\"partial\" : \"") && !hypothesis.contains("\"partial\" : \"\"")) {
+            resetSilenceTimer()
+        }
     }
 
     override fun onResult(hypothesis: String?) {
         val text = parseText(hypothesis)
         if (text.isNotEmpty()) {
+            resetSilenceTimer()
             mainHandler.post { ime.onTextInput("$text ") }
         }
     }

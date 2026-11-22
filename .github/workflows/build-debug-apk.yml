@@ -22,7 +22,7 @@ jobs:
       - name: Descargar modelo Vosk en español
         run: |
           mkdir -p app/src/main/assets/model-es
-          curl -L -f -A "Mozilla/5.0" -o vosk-model-small-es-0.42.zip https://alphacephei.com
+          curl -L -f -o vosk-model-small-es-0.42.zip "https://huggingface.co"
           unzip -q vosk-model-small-es-0.42.zip
           mv vosk-model-small-es-0.42/* app/src/main/assets/model-es/
           rm -rf vosk-model-small-es-0.42 vosk-model-small-es-0.42.zip

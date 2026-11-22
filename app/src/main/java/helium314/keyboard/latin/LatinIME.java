@@ -134,11 +134,13 @@ public class LatinIME extends InputMethodService implements
 
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
 
-    private GestureConsumer mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
+        private GestureConsumer mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
 
     private final ClipboardHistoryManager mClipboardHistoryManager = new ClipboardHistoryManager(this);
+    private final OfflineVoiceManager mOfflineVoiceManager = new OfflineVoiceManager(this);
 
     public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIME> {
+
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;

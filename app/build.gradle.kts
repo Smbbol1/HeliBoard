@@ -15,12 +15,17 @@ android {
         targetSdk = 37
         versionCode = 4301
         versionName = "4.3-beta2"
-        ndk {
+                ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a"))
         }
+        androidResources {
+            localeFilters += listOf("es", "en")
+            noCompress += listOf("mdl", "fst", "ark", "int", "conf", "stats", "dubm", "ie", "mat")
+        }
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
+
 
         buildTypes {
         release {

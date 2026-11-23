@@ -642,11 +642,25 @@ public class KeyboardView extends View {
         freeOffscreenBuffer();
     }
 
+    public void releaseGraphicsOnHide() {
+        if (!KtxKt.prefs(getContext()).getBoolean(Defaults.KEY_PERFORMANCE_OPTIMIZATION, Defaults.PREF_PERFORMANCE_OPTIMIZATION)) {
+            return;
+        }
+        freeOffscreenBuffer();
+        if (mHardwareAcceleratedDrawingEnabled && getLayerType() == LAYER_TYPE_HARDWARE) {
+            setLayerType(LAYER_TYPE_NONE, null);
+        }
+    }
+
     public void deallocateMemory() {
         freeOffscreenBuffer();
+        if (mHardwareAcceleratedDrawingEnabled && getLayerType() == LAYER_TYPE_HARDWARE) {
+            setLayerType(LAYER_TYPE_NONE, null);
+        }
     }
 
     private void setKeyIconColor(Key key, Drawable icon, Keyboard keyboard) {
+
         if (key.hasActionKeyBackground()) {
             mColors.setColor(icon, ColorType.ACTION_KEY_ICON);
         } else if (key.isShift() && keyboard != null) {

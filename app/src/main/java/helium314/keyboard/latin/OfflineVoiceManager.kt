@@ -34,12 +34,17 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         }
     }
 
-    private fun getSilenceTimeoutMs(): Long {
+        private fun getSilenceTimeoutMs(): Long {
         val seconds = ime.prefs().getInt(Defaults.KEY_VOICE_SILENCE_TIMEOUT, Defaults.PREF_VOICE_SILENCE_TIMEOUT)
         return seconds * 1000L
     }
 
+    private fun isOptimizationEnabled(): Boolean {
+        return ime.prefs().getBoolean(Defaults.KEY_VOICE_OPTIMIZATION, Defaults.PREF_VOICE_OPTIMIZATION)
+    }
+
     private fun resetSilenceTimer() {
+
         mainHandler.removeCallbacks(silenceTimeoutRunnable)
         val timeoutMs = getSilenceTimeoutMs()
         if (timeoutMs > 0L) {

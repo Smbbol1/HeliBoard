@@ -37,11 +37,14 @@ import helium314.keyboard.latin.common.Colors;
 import helium314.keyboard.latin.common.Constants;
 import helium314.keyboard.latin.common.StringUtilsKt;
 import helium314.keyboard.latin.settings.Settings;
+import helium314.keyboard.latin.settings.Defaults;
 import helium314.keyboard.latin.suggestions.MoreSuggestions;
 import helium314.keyboard.latin.suggestions.MoreSuggestionsView;
+import helium314.keyboard.latin.utils.KtxKt;
 import helium314.keyboard.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
+
 
 /** A view that renders a virtual {@link Keyboard}. */
 // todo: this ThemeStyle-dependent stuff really should not be in here!

@@ -24,6 +24,7 @@ import helium314.keyboard.latin.common.ColorType
 import helium314.keyboard.latin.define.DebugFlags
 import helium314.keyboard.latin.settings.Defaults
 import helium314.keyboard.latin.settings.Settings
+import helium314.keyboard.latin.settings.setFloatingKeyboardEnabled
 import helium314.keyboard.latin.settings.setFloatingSize
 
 object FloatingKeyboardUtils {

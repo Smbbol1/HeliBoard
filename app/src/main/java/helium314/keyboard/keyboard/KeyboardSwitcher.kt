@@ -294,12 +294,24 @@ class KeyboardSwitcher private constructor() {
         inputView?.keyboardView?.onHideWindow()
     }
 
-    fun onWindowShown() {
+        fun onWindowShown() {
         if (Settings.getValues().mIsFloatingKeyboard)
             inputView?.let { FloatingKeyboardUtils.setFloating(it.root) }
     }
 
+    fun exitFloatingMode() {
+        val inputView = inputView ?: return
+        setFloatingKeyboardEnabled(themeContext, false)
+        val settings = Settings.getInstance()
+        settings.loadSettings(themeContext, settings.current.mLocale, settings.current.mInputAttributes)
+        FloatingKeyboardUtils.disableFloating(inputView.root)
+        setBackgroundGatheringIndicatorPosition()
+        updateSoftInputWindowLayoutParameters()
+        reloadKeyboard()
+    }
+
     fun updateSoftInputWindowLayoutParameters() = latinIME.updateSoftInputWindowLayoutParameters(inputView?.root)
+
 
     private fun setMainKeyboardFrame(settingsValues: SettingsValues, toggleState: KeyboardSwitchState) {
         val inputView = inputView ?: return

@@ -158,19 +158,23 @@ public class KeyboardView extends View {
         return mKeyVisualAttributes;
     }
 
-    private static void blendAlpha(@NonNull final Paint paint, final int alpha) {
+        private static void blendAlpha(@NonNull final Paint paint, final int alpha) {
         final int color = paint.getColor();
         paint.setARGB((paint.getAlpha() * alpha) / Constants.Color.ALPHA_OPAQUE,
                 Color.red(color), Color.green(color), Color.blue(color));
     }
 
+    private boolean mHardwareAcceleratedDrawingEnabled = false;
+
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
+        mHardwareAcceleratedDrawingEnabled = enabled;
         if (!enabled) return;
         setLayerType(LAYER_TYPE_HARDWARE, null);
     }
 
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
+
      * view will re-layout itself to accommodate the keyboard.
      * @see Keyboard
      * @see #getKeyboard()

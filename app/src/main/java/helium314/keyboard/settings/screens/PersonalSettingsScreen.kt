@@ -54,12 +54,20 @@ fun createPersonalSettings(context: Context) = listOf(
             description = "Mantén presionado y arrastra un icono en la barra para intercambiar su posición"
         )
     },
-    Setting(context, Defaults.KEY_FLOATING_EXIT_BUTTON, R.string.ime_settings) { setting ->
+        Setting(context, Defaults.KEY_FLOATING_EXIT_BUTTON, R.string.ime_settings) { setting ->
         SwitchPreference(
             name = "Botón salir de ventana flotante",
             key = setting.key,
             default = Defaults.PREF_FLOATING_EXIT_BUTTON,
             description = "Muestra un icono en la esquina inferior derecha del teclado flotante para volver al modo normal"
+        )
+    },
+    Setting(context, Defaults.KEY_FLOATING_PERSISTENT_POS, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Posición permanente del teclado flotante",
+            key = setting.key,
+            default = Defaults.PREF_FLOATING_PERSISTENT_POS,
+            description = "Mantiene fija la ubicación donde colocaste el teclado flotante al abrirlo y cerrarlo hasta moverlo manualmente"
         )
     }
 )

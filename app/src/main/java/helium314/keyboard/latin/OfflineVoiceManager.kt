@@ -63,26 +63,51 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
             return
         }
 
-        if (model == null) {
+                if (model == null) {
             if (isUnpacking) {
                 showToast("Preparando modelo de voz offline, espera...")
                 return
             }
             isUnpacking = true
-            StorageService.unpack(ime, "model-es", "model",
-                { loadedModel ->
-                    model = loadedModel
-                    isUnpacking = false
-                    startListening()
-                },
-                { exception ->
-                    isUnpacking = false
-                    showToast("Error al cargar modelo: ${exception.message}")
-                }
-            )
+            val cachedModelDir = File(ime.getExternalFilesDir(null), "model")
+            val uuidFile = File(cachedModelDir, "uuid")
+            if (isOptimizationEnabled() && cachedModelDir.isDirectory && uuidFile.exists()) {
+                Thread {
+                    try {
+                        val loadedModel = Model(cachedModelDir.absolutePath)
+                        mainHandler.post {
+                            model = loadedModel
+                            isUnpacking = false
+                            startListening()
+                        }
+                    } catch (_: Exception) {
+                        mainHandler.post {
+                            unpackAndLoadModel()
+                        }
+                    }
+                }.start()
+            } else {
+                unpackAndLoadModel()
+            }
         } else {
             startListening()
         }
+    }
+
+    private fun unpackAndLoadModel() {
+        StorageService.unpack(ime, "model-es", "model",
+            { loadedModel ->
+                model = loadedModel
+                isUnpacking = false
+                startListening()
+            },
+            { exception ->
+                isUnpacking = false
+                showToast("Error al cargar modelo: ${exception.message}")
+            }
+        )
+    }
+
     }
 
     private fun startListening() {

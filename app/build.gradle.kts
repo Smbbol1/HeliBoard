@@ -58,10 +58,23 @@ android {
             applicationIdSuffix = ".debug"
         }
 
-        androidComponents.onVariants { variant: ApplicationVariant ->
+                androidComponents.onVariants { variant: ApplicationVariant ->
+            val unusedDicts = listOf(
+                "main_ar.dict", "main_be.dict", "main_bg.dict", "main_ca.dict", "main_cs.dict",
+                "main_da.dict", "main_de.dict", "main_el.dict", "main_en.dict", "main_eo.dict",
+                "main_et.dict", "main_eu.dict", "main_fa.dict", "main_fi.dict", "main_fr.dict",
+                "main_gl.dict", "main_he.dict", "main_hi.dict", "main_hr.dict", "main_hu.dict",
+                "main_hy.dict", "main_id.dict", "main_it.dict", "main_ka.dict", "main_kk.dict",
+                "main_ko.dict", "main_ky.dict", "main_lt.dict", "main_lv.dict", "main_mk.dict",
+                "main_ml.dict", "main_mn.dict", "main_mr.dict", "main_nb.dict", "main_nl.dict",
+                "main_pl.dict", "main_pt.dict", "main_ro.dict", "main_ru.dict", "main_sk.dict",
+                "main_sl.dict", "main_sr.dict", "main_sv.dict", "main_ta.dict", "main_te.dict",
+                "main_th.dict", "main_tr.dict", "main_uk.dict", "main_uz.dict", "main_vi.dict"
+            )
+            variant.androidResources.ignoreAssetsPatterns = unusedDicts
             if (variant.buildType == "debug") {
-                variant.androidResources.ignoreAssetsPatterns = listOf("main_ro.dict")
                 variant.proguardFiles = emptyList()
+
                 variant.proguardFiles.add(project.layout.buildDirectory.file(project.buildFile.parent + "/dontoptimize.pro"))
                 variant.proguardFiles.add(project.layout.buildDirectory.file(project.buildFile.parent + "/proguard-rules.pro"))
             }

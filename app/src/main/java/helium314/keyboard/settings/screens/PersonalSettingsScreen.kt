@@ -74,15 +74,24 @@ fun createPersonalSettings(context: Context) = listOf(
             description = "Mantiene fija la ubicación donde colocaste el teclado flotante al abrirlo y cerrarlo hasta moverlo manualmente"
         )
     },
-    Setting(context, Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS, R.string.ime_settings) { setting ->
+        Setting(context, Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS, R.string.ime_settings) { setting ->
         SwitchPreference(
             name = "Ajustar iconos de barra en modo flotante",
             key = setting.key,
             default = Defaults.PREF_FLOATING_FIT_TOOLBAR_KEYS,
             description = "Redimensiona automáticamente todos los iconos superiores (incluido el micrófono) para que quepan al reducir el teclado flotante"
         )
+    },
+    Setting(context, Defaults.KEY_REQUEST_MIC_ON_STARTUP, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Solicitar permiso de micrófono al iniciar",
+            key = setting.key,
+            default = Defaults.PREF_REQUEST_MIC_ON_STARTUP,
+            description = "Pide automáticamente el permiso de grabación de audio la primera vez que abres la aplicación si aún no está concedido"
+        )
     }
 )
+
 
 
 

@@ -213,11 +213,14 @@ object Defaults {
     const val PREF_FLOATING_FIT_TOOLBAR_KEYS = false
         const val KEY_REQUEST_MIC_ON_STARTUP = "pref_request_mic_on_startup"
     const val PREF_REQUEST_MIC_ON_STARTUP = true
-        const val KEY_VOICE_OPTIMIZATION = "pref_voice_optimization"
+                const val KEY_VOICE_OPTIMIZATION = "pref_voice_optimization"
     const val PREF_VOICE_OPTIMIZATION = true
     const val KEY_PERFORMANCE_OPTIMIZATION = "pref_performance_optimization"
     const val PREF_PERFORMANCE_OPTIMIZATION = true
+    const val KEY_DEDICATED_SUGGESTIONS_ROW = "pref_dedicated_suggestions_row"
+    const val PREF_DEDICATED_SUGGESTIONS_ROW = false
 }
+
 
 
 

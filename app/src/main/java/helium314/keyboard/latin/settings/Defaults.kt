@@ -216,9 +216,7 @@ object Defaults {
                 const val KEY_VOICE_OPTIMIZATION = "pref_voice_optimization"
     const val PREF_VOICE_OPTIMIZATION = true
     const val KEY_PERFORMANCE_OPTIMIZATION = "pref_performance_optimization"
-    const val PREF_PERFORMANCE_OPTIMIZATION = true
-    const val KEY_DEDICATED_SUGGESTIONS_ROW = "pref_dedicated_suggestions_row"
-    const val PREF_DEDICATED_SUGGESTIONS_ROW = false
+    const val PREF_PERFORMANCE_OPTIMIZATION = true   
 }
 
 

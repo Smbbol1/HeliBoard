@@ -96,12 +96,19 @@ object FloatingKeyboardUtils {
         val maxX = maxX.coerceAtLeast(0)
         val maxY = maxY.coerceAtLeast(0)
         val width = context.resources.displayMetrics.widthPixels
-        val x = context.prefs().getInt(Settings.PREF_FLOATING_POS_X_PREFIX + width, width / 2)
+                val x = context.prefs().getInt(Settings.PREF_FLOATING_POS_X_PREFIX + width, width / 2)
         val y = context.prefs().getInt(Settings.PREF_FLOATING_POS_Y_PREFIX + width, context.resources.displayMetrics.heightPixels / 2)
+        if (context.prefs().getBoolean(Defaults.KEY_FLOATING_PERSISTENT_POS, Defaults.PREF_FLOATING_PERSISTENT_POS)) {
+            if (maxX > 0 && maxY > 0) {
+                return x.coerceIn(0, maxX) to y.coerceIn(0, maxY)
+            }
+            return x.coerceAtLeast(0) to y.coerceAtLeast(0)
+        }
         if (x > maxX || y > maxY)
             savePosition(context, maxX, maxY)
         return x.coerceIn(0, maxX) to y.coerceIn(0, maxY)
     }
+
 
     private fun savePosition(context: Context, x: Int, y: Int) {
         val width = context.resources.displayMetrics.widthPixels

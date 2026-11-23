@@ -22,13 +22,14 @@ android {
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
 
-    buildTypes {
+        buildTypes {
         release {
             isMinifyEnabled = true
-            isShrinkResources = false
+            isShrinkResources = true
             isDebuggable = false
             isJniDebuggable = false
         }
+
         create("nouserlib") {
             isMinifyEnabled = true
             isShrinkResources = false

@@ -12,3 +12,20 @@
 # after upgrading to gradle 8, stack traces contain "unknown source"
 -keepattributes SourceFile,LineNumberTable
 -dontobfuscate
+
+# Optimización de bytecode y eliminación de logs en release
+-optimizationpasses 5
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+}
+
+# Mantener clases y callbacks nativos de Vosk y JNA
+-keep class org.vosk.** { *; }
+-keep class com.sun.jna.** { *; }
+-keepclassmembers class * extends com.sun.jna.** { *; }
+-dontwarn com.sun.jna.**
+-dontwarn org.vosk.**
+

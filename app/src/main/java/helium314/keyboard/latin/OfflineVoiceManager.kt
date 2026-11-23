@@ -17,6 +17,8 @@ import org.vosk.Recognizer
 import org.vosk.android.RecognitionListener
 import org.vosk.android.SpeechService
 import org.vosk.android.StorageService
+import java.io.File
+
 
 class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
 

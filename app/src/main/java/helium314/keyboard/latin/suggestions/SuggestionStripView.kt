@@ -652,9 +652,10 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             toolbarExpandKey.isVisible = toolbarIsExpandable
         }
 
-        toolbarExpandKey.setOnClickListener(if (!toolbarIsExpandable) null else this)
+                toolbarExpandKey.setOnClickListener(if (!toolbarIsExpandable) null else this)
         pinnedKeys.visibility = suggestionsStrip.visibility
         isExternalSuggestionVisible = false
+        fitFloatingToolbarKeysIfNeeded()
     }
 
     private fun addKeyToPinnedKeys(pinnedKey: ToolbarKey) {
@@ -667,11 +668,13 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         copy.scaleY = original.scaleY
         copy.contentDescription = original.contentDescription
         copy.setImageDrawable(original.drawable)
-        copy.layoutParams = original.layoutParams
+        copy.layoutParams = createToolbarKeyLayoutParams()
         copy.isActivated = original.isActivated
         setupKey(copy, Settings.getValues().mColors)
         pinnedKeys.addView(copy)
+        fitFloatingToolbarKeysIfNeeded()
     }
+
 
         private fun setupKey(view: ImageButton, colors: Colors) {
         view.setOnClickListener(this)

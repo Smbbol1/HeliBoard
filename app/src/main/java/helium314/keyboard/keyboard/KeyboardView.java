@@ -241,13 +241,17 @@ public class KeyboardView extends View {
         setMeasuredDimension(width, height);
     }
 
-    @Override
+        @Override
     protected void onDraw(@NonNull final Canvas canvas) {
+        if (mHardwareAcceleratedDrawingEnabled && getLayerType() != LAYER_TYPE_HARDWARE) {
+            setLayerType(LAYER_TYPE_HARDWARE, null);
+        }
         super.onDraw(canvas);
         if (canvas.isHardwareAccelerated()) {
             onDrawKeyboard(canvas);
             return;
         }
+
 
         final boolean bufferNeedsUpdates = mInvalidateAllKeys || !mInvalidatedKeys.isEmpty();
         if (bufferNeedsUpdates || mOffscreenBuffer == null) {

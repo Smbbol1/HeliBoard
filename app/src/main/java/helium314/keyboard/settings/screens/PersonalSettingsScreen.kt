@@ -17,13 +17,15 @@ fun PersonalSettingsScreen(
     SearchSettingsScreen(
         onClickBack = onClickBack,
         title = "Ajustes personales",
-                settings = listOf(
+                        settings = listOf(
             Defaults.KEY_VOICE_SILENCE_TIMEOUT,
             Defaults.KEY_MOVE_PINNED_KEYS,
-            Defaults.KEY_FLOATING_EXIT_BUTTON
+            Defaults.KEY_FLOATING_EXIT_BUTTON,
+            Defaults.KEY_FLOATING_PERSISTENT_POS
         )
     )
 }
+
 
 
 fun createPersonalSettings(context: Context) = listOf(

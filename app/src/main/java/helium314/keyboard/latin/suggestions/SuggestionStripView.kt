@@ -394,10 +394,14 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         dismissMoreSuggestionsPanel()
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         // Called by the framework when the size is known. Show the important notice if applicable.
         // This may be overridden by showing suggestions later, if applicable.
+        if (w != oldw) {
+            post { fitFloatingToolbarKeysIfNeeded() }
+        }
     }
+
 
     override fun dispatchPopulateAccessibilityEvent(event: AccessibilityEvent): Boolean {
         // Don't populate accessibility event with suggested words and voice key.

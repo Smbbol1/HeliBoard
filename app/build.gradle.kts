@@ -81,11 +81,20 @@ android {
     }
     ndkVersion = "28.0.13004108"
 
-    packaging {
+        packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
+        }
+        resources {
+            excludes += listOf(
+                "META-INF/LICENSE*",
+                "META-INF/NOTICE*",
+                "META-INF/*.kotlin_module",
+                "kotlin-tooling-metadata.json"
+            )
         }
     }
+
 
     testOptions {
         unitTests {

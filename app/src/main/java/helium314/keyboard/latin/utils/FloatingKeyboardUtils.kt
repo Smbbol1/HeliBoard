@@ -129,13 +129,18 @@ object FloatingKeyboardUtils {
         val lp = view.layoutParams as ViewGroup.MarginLayoutParams
         var positionX = lp.leftMargin.toFloat()
         var positionY = lp.topMargin.toFloat()
-        setOnTouchListener { _, event ->
+                setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    if (context.prefs().getBoolean(Defaults.KEY_FLOATING_PERSISTENT_POS, Defaults.PREF_FLOATING_PERSISTENT_POS)) {
+                        positionX = lp.leftMargin.toFloat()
+                        positionY = lp.topMargin.toFloat()
+                    }
                     startX = event.rawX
                     startY = event.rawY
                     true
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     val dx = event.rawX - startX
                     val dy = event.rawY - startY

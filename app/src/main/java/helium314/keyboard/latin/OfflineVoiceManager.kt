@@ -99,7 +99,7 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         }
     }
 
-    private fun unpackAndLoadModel() {
+        private fun unpackAndLoadModel() {
         StorageService.unpack(ime, "model-es", "model",
             { loadedModel ->
                 model = loadedModel
@@ -113,9 +113,8 @@ class OfflineVoiceManager(private val ime: LatinIME) : RecognitionListener {
         )
     }
 
-    }
-
     private fun startListening() {
+
         try {
             val recognizer = Recognizer(model, 16000.0f)
             speechService = SpeechService(recognizer, 16000.0f)

@@ -160,16 +160,16 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             setToolbarVisibility(true)
         }
 
-        // toolbar keys setup (no need to hide them any more when locked, because then suggestion strip is gone anyway
+                // toolbar keys setup (no need to hide them any more when locked, because then suggestion strip is gone anyway
         for (key in getEnabledToolbarKeys(context.prefs())) {
             val button = createToolbarKey(context, key)
-            button.layoutParams = toolbarKeyLayoutParams
+            button.layoutParams = createToolbarKeyLayoutParams()
             setupKey(button, colors)
             toolbar.addView(button)
         }
         for (pinnedKey in getPinnedToolbarKeys(context.prefs())) {
             val button = createToolbarKey(context, pinnedKey)
-            button.layoutParams = toolbarKeyLayoutParams
+            button.layoutParams = createToolbarKeyLayoutParams()
             setupKey(button, colors)
             pinnedKeys.addView(button)
             val pinnedKeyInToolbar = toolbar.findViewWithTag<View>(pinnedKey)
@@ -180,10 +180,91 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             // set min with of the toolbar so the weight of the toolbar keys actually does something
             // todo: results in requestLayout() improperly called by android.widget.LinearLayout during layout: running second layout pass
             toolbar.minimumWidth = toolbarContainer.width
+            fitFloatingToolbarKeysIfNeeded()
         }
 
         updateKeys()
     }
+
+    private fun createToolbarKeyLayoutParams(): LinearLayout.LayoutParams {
+        return LinearLayout.LayoutParams(
+            resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_edge_key_width),
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+    }
+
+    private fun fitFloatingToolbarKeysIfNeeded() {
+        val fitEnabled = context.prefs().getBoolean(
+            Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS,
+            Defaults.PREF_FLOATING_FIT_TOOLBAR_KEYS
+        )
+        if (!fitEnabled) return
+
+        val isFloating = Settings.getValues().mIsFloatingKeyboard
+        val defaultKeyWidth = resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_edge_key_width)
+        val totalWidth = if (width > 0) width else resources.displayMetrics.widthPixels
+        val expandWidth = if (toolbarExpandKey.isVisible) toolbarExpandKey.layoutParams.width else 0
+        val availableWidth = (totalWidth - expandWidth).coerceAtLeast(1)
+
+        // Ajustar botones anclados (pinnedKeys)
+        val visiblePinned = (0 until pinnedKeys.childCount)
+            .map { pinnedKeys.getChildAt(it) }
+            .filter { it.isVisible }
+        if (visiblePinned.isNotEmpty()) {
+            val targetPinnedWidth = if (isFloating) {
+                (availableWidth / visiblePinned.size).coerceAtMost(defaultKeyWidth)
+            } else {
+                defaultKeyWidth
+            }
+            for (child in visiblePinned) {
+                val lp = child.layoutParams as? LinearLayout.LayoutParams ?: continue
+                if (lp.width != targetPinnedWidth || lp.weight != 1f) {
+                    lp.width = targetPinnedWidth
+                    lp.weight = 1f
+                    child.layoutParams = lp
+                }
+                if (child is ImageButton) {
+                    child.scaleType = ImageView.ScaleType.FIT_CENTER
+                    val pad = if (isFloating && targetPinnedWidth < defaultKeyWidth) {
+                        (targetPinnedWidth * 0.18f).toInt().coerceAtLeast(2)
+                    } else {
+                        resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_edge_key_width) / 4
+                    }
+                    child.setPadding(pad, pad, pad, pad)
+                }
+            }
+        }
+
+        // Ajustar botones de la barra expandida (toolbar)
+        val visibleToolbar = (0 until toolbar.childCount)
+            .map { toolbar.getChildAt(it) }
+            .filter { it.isVisible }
+        if (visibleToolbar.isNotEmpty()) {
+            val targetToolbarWidth = if (isFloating) {
+                (availableWidth / visibleToolbar.size).coerceAtMost(defaultKeyWidth)
+            } else {
+                defaultKeyWidth
+            }
+            for (child in visibleToolbar) {
+                val lp = child.layoutParams as? LinearLayout.LayoutParams ?: continue
+                if (lp.width != targetToolbarWidth || lp.weight != 1f) {
+                    lp.width = targetToolbarWidth
+                    lp.weight = 1f
+                    child.layoutParams = lp
+                }
+                if (child is ImageButton) {
+                    child.scaleType = ImageView.ScaleType.FIT_CENTER
+                    val pad = if (isFloating && targetToolbarWidth < defaultKeyWidth) {
+                        (targetToolbarWidth * 0.18f).toInt().coerceAtLeast(2)
+                    } else {
+                        resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_edge_key_width) / 4
+                    }
+                    child.setPadding(pad, pad, pad, pad)
+                }
+            }
+        }
+    }
+
 
     private lateinit var listener: Listener
     private var suggestedWords = SuggestedWords.emptyInstance

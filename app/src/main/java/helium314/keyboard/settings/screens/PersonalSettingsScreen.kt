@@ -64,14 +64,23 @@ fun createPersonalSettings(context: Context) = listOf(
             description = "Muestra un icono en la esquina inferior derecha del teclado flotante para volver al modo normal"
         )
     },
-    Setting(context, Defaults.KEY_FLOATING_PERSISTENT_POS, R.string.ime_settings) { setting ->
+        Setting(context, Defaults.KEY_FLOATING_PERSISTENT_POS, R.string.ime_settings) { setting ->
         SwitchPreference(
             name = "Posición permanente del teclado flotante",
             key = setting.key,
             default = Defaults.PREF_FLOATING_PERSISTENT_POS,
             description = "Mantiene fija la ubicación donde colocaste el teclado flotante al abrirlo y cerrarlo hasta moverlo manualmente"
         )
+    },
+    Setting(context, Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Ajustar iconos de barra en modo flotante",
+            key = setting.key,
+            default = Defaults.PREF_FLOATING_FIT_TOOLBAR_KEYS,
+            description = "Redimensiona automáticamente todos los iconos superiores (incluido el micrófono) para que quepan al reducir el teclado flotante"
+        )
     }
 )
+
 
 

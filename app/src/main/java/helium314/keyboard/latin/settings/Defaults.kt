@@ -207,8 +207,10 @@ object Defaults {
     const val PREF_MOVE_PINNED_KEYS = false
         const val KEY_FLOATING_EXIT_BUTTON = "pref_floating_exit_button"
     const val PREF_FLOATING_EXIT_BUTTON = true
-    const val KEY_FLOATING_PERSISTENT_POS = "pref_floating_persistent_pos"
+        const val KEY_FLOATING_PERSISTENT_POS = "pref_floating_persistent_pos"
     const val PREF_FLOATING_PERSISTENT_POS = false
+    const val KEY_FLOATING_FIT_TOOLBAR_KEYS = "pref_floating_fit_toolbar_keys"
+    const val PREF_FLOATING_FIT_TOOLBAR_KEYS = false
 }
 
 

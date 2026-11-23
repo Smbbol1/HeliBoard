@@ -52,7 +52,7 @@ object FloatingKeyboardUtils {
         if (DebugFlags.DEBUG_ENABLED)
             Log.d(TAG, "place floating view at $x, $y, width ${Settings.getValues().mFloatingWidth}, height $actualFloatingHeight")
                 ViewLayoutUtils.placeViewAt(view, x, y, Settings.getValues().mFloatingWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val showExitBtn = view.context.prefs().getBoolean(Defaults.KEY_FLOATING_EXIT_BUTTON, Defaults.PREF_FLOATING_EXIT_BUTTON)
+                val showExitBtn = view.context.prefs().getBoolean(Defaults.KEY_FLOATING_EXIT_BUTTON, Defaults.PREF_FLOATING_EXIT_BUTTON)
         view.findViewById<ImageView>(R.id.exit_floating_handle)?.apply {
             isVisible = showExitBtn
             if (showExitBtn) {
@@ -61,12 +61,11 @@ object FloatingKeyboardUtils {
                 setOnClickListener {
                     AudioAndHapticFeedbackManager.getInstance()
                         .performHapticAndAudioFeedback(KeyCode.NOT_SPECIFIED, this, HapticEvent.KEY_PRESS)
-                    setFloatingKeyboardEnabled(context, false)
-                    disableFloating(view)
-                    KeyboardSwitcher.getInstance().updateSoftInputWindowLayoutParameters()
+                    KeyboardSwitcher.getInstance().exitFloatingMode()
                 }
             }
         }
+
         if (view.findViewById<View>(R.id.float_handle_container)?.isVisible == true)
             return
         view.findViewById<View>(R.id.float_handle_container)?.isVisible = true

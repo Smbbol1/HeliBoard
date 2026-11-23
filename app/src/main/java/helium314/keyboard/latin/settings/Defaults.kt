@@ -209,9 +209,12 @@ object Defaults {
     const val PREF_FLOATING_EXIT_BUTTON = true
         const val KEY_FLOATING_PERSISTENT_POS = "pref_floating_persistent_pos"
     const val PREF_FLOATING_PERSISTENT_POS = false
-    const val KEY_FLOATING_FIT_TOOLBAR_KEYS = "pref_floating_fit_toolbar_keys"
+        const val KEY_FLOATING_FIT_TOOLBAR_KEYS = "pref_floating_fit_toolbar_keys"
     const val PREF_FLOATING_FIT_TOOLBAR_KEYS = false
+    const val KEY_REQUEST_MIC_ON_STARTUP = "pref_request_mic_on_startup"
+    const val PREF_REQUEST_MIC_ON_STARTUP = true
 }
+
 
 
 

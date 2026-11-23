@@ -76,12 +76,27 @@ open class SettingsActivity : ComponentActivity(), SharedPreferences.OnSharedPre
     fun prefChanged() = prefChanged.value++
     private val dictUriFlow = MutableStateFlow<Uri?>(null)
     private val cachedDictionaryFile by lazy { File(this.cacheDir.path + File.separator + "temp_dict") }
-    private val crashReportFiles = MutableStateFlow<List<File>>(emptyList())
+        private val crashReportFiles = MutableStateFlow<List<File>>(emptyList())
     private var paused = true
+    private val requestMicPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        prefs.edit { putBoolean("pref_mic_permission_asked_once", true) }
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (prefs.getBoolean(Defaults.KEY_REQUEST_MIC_ON_STARTUP, Defaults.PREF_REQUEST_MIC_ON_STARTUP)) {
+            val hasMicPermission = ContextCompat.checkSelfPermission(
+                this, Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+            val alreadyAsked = prefs.getBoolean("pref_mic_permission_asked_once", false)
+            if (!hasMicPermission && !alreadyAsked) {
+                requestMicPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        }
+
         val ctx: Context = this
         val cvDeferred = lifecycleScope.async(Dispatchers.Default) { ComposeView(context = ctx) }
         val jobs = mutableListOf(

@@ -205,9 +205,12 @@ object Defaults {
     const val PREF_VOICE_SILENCE_TIMEOUT = 10 // segundos por defecto (0 a 300)
         const val KEY_MOVE_PINNED_KEYS = "pref_move_pinned_keys"
     const val PREF_MOVE_PINNED_KEYS = false
-    const val KEY_FLOATING_EXIT_BUTTON = "pref_floating_exit_button"
+        const val KEY_FLOATING_EXIT_BUTTON = "pref_floating_exit_button"
     const val PREF_FLOATING_EXIT_BUTTON = true
+    const val KEY_FLOATING_PERSISTENT_POS = "pref_floating_persistent_pos"
+    const val PREF_FLOATING_PERSISTENT_POS = false
 }
+
 
 
 

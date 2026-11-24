@@ -90,6 +90,7 @@ final class SuggestionStripLayoutHelper {
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
 
+        private final Context mContext;
     private final int mSuggestionStripOptions;
     // These constants are the flag values of
     // {@link R.styleable#SuggestionStripView_suggestionStripOptions} attribute.
@@ -100,8 +101,10 @@ final class SuggestionStripLayoutHelper {
     public SuggestionStripLayoutHelper(final Context context, final AttributeSet attrs,
             final int defStyle, final ArrayList<TextView> wordViews,
             final ArrayList<View> dividerViews, final ArrayList<TextView> debugInfoViews) {
+        mContext = context;
         mWordViews = wordViews;
         mDividerViews = dividerViews;
+
         mDebugInfoViews = debugInfoViews;
 
         final TextView wordView = wordViews.get(0);

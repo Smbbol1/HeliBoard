@@ -86,15 +86,44 @@ fun createPersonalSettings(context: Context) = listOf(
             description = "Redimensiona automáticamente todos los iconos superiores (incluido el micrófono) para que quepan al reducir el teclado flotante"
         )
     },
-    Setting(context, Defaults.KEY_REQUEST_MIC_ON_STARTUP, R.string.ime_settings) { setting ->
+        Setting(context, Defaults.KEY_REQUEST_MIC_ON_STARTUP, R.string.ime_settings) { setting ->
         SwitchPreference(
             name = "Solicitar permiso de micrófono al iniciar",
             key = setting.key,
             default = Defaults.PREF_REQUEST_MIC_ON_STARTUP,
             description = "Pide automáticamente el permiso de grabación de audio la primera vez que abres la aplicación si aún no está concedido"
         )
+    },
+    Setting(context, Defaults.KEY_DEDICATED_SUGGESTIONS_ROW, R.string.ime_settings) { setting ->
+        SwitchPreference(
+            name = "Fila superior dedicada para sugerencias",
+            key = setting.key,
+            default = Defaults.PREF_DEDICATED_SUGGESTIONS_ROW,
+            description = "Muestra las palabras predictivas en una fila compacta encima de la barra de herramientas al escribir"
+        )
+    },
+    Setting(context, Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT, R.string.ime_settings) { setting ->
+        SliderPreference(
+            name = "Altura de la fila de sugerencias",
+            key = setting.key,
+            default = Defaults.PREF_DEDICATED_SUGGESTIONS_ROW_HEIGHT,
+            description = { dp -> "$dp dp" },
+            range = 1f..60f,
+            stepSize = 1
+        )
+    },
+    Setting(context, Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_COUNT, R.string.ime_settings) { setting ->
+        SliderPreference(
+            name = "Número de palabras en la fila dedicada",
+            key = setting.key,
+            default = Defaults.PREF_DEDICATED_SUGGESTIONS_ROW_COUNT,
+            description = { count -> if (count == 1) "1 palabra" else "$count palabras" },
+            range = 1f..10f,
+            stepSize = 1
+        )
     }
 )
+
 
 
 

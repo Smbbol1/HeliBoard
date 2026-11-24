@@ -215,9 +215,16 @@ object Defaults {
     const val PREF_REQUEST_MIC_ON_STARTUP = true
                 const val KEY_VOICE_OPTIMIZATION = "pref_voice_optimization"
     const val PREF_VOICE_OPTIMIZATION = true
-    const val KEY_PERFORMANCE_OPTIMIZATION = "pref_performance_optimization"
-    const val PREF_PERFORMANCE_OPTIMIZATION = true   
+        const val KEY_PERFORMANCE_OPTIMIZATION = "pref_performance_optimization"
+    const val PREF_PERFORMANCE_OPTIMIZATION = true
+    const val KEY_DEDICATED_SUGGESTIONS_ROW = "pref_dedicated_suggestions_row"
+    const val PREF_DEDICATED_SUGGESTIONS_ROW = false
+    const val KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT = "pref_dedicated_suggestions_row_height"
+    const val PREF_DEDICATED_SUGGESTIONS_ROW_HEIGHT = 26 // dp (1 a 60)
+    const val KEY_DEDICATED_SUGGESTIONS_ROW_COUNT = "pref_dedicated_suggestions_row_count"
+    const val PREF_DEDICATED_SUGGESTIONS_ROW_COUNT = 3 // palabras (1 a 10)
 }
+
 
 
 

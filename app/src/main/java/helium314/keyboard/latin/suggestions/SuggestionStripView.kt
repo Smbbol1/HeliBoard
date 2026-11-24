@@ -648,11 +648,16 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         }
     }
 
-    private fun clear() {
+        private fun clear() {
         suggestionsStrip.removeAllViews()
+        dedicatedSuggestionsStrip.removeAllViews()
         if (DEBUG_SUGGESTIONS) removeAllDebugInfoViews()
-        if (!toolbarContainer.isVisible)
+        if (isDedicatedRowEnabled()) {
+            suggestionsStrip.isGone = true
+            dedicatedSuggestionsStrip.isGone = true
+        } else if (!toolbarContainer.isVisible) {
             suggestionsStrip.isVisible = true
+        }
         dismissMoreSuggestionsPanel()
         for (word in wordViews) {
             word.setOnTouchListener(null)
@@ -675,6 +680,8 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
     }
 
     fun setVoiceListeningState(isListening: Boolean) {
+        isVoiceListening = isListening
+        updateDedicatedStripVisibility(!suggestedWords.isEmpty() && suggestedWords.wordCountToShow > 0)
         val voiceViews = listOfNotNull(
             toolbar.findViewWithTag<View>(ToolbarKey.VOICE),
             pinnedKeys.findViewWithTag<View>(ToolbarKey.VOICE)
@@ -709,11 +716,17 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             toolbarExpandKey.isVisible = toolbarIsExpandable
         }
 
-                toolbarExpandKey.setOnClickListener(if (!toolbarIsExpandable) null else this)
-        pinnedKeys.visibility = suggestionsStrip.visibility
+        toolbarExpandKey.setOnClickListener(if (!toolbarIsExpandable) null else this)
+        if (isDedicatedRowEnabled()) {
+            pinnedKeys.isVisible = !toolbarContainer.isVisible
+            suggestionsStrip.isGone = true
+        } else {
+            pinnedKeys.visibility = suggestionsStrip.visibility
+        }
         isExternalSuggestionVisible = false
         fitFloatingToolbarKeysIfNeeded()
     }
+
 
     private fun addKeyToPinnedKeys(pinnedKey: ToolbarKey) {
         val original = toolbar.findViewWithTag<ImageButton>(pinnedKey) ?: return

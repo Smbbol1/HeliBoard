@@ -324,18 +324,21 @@ final class SuggestionStripLayoutHelper {
      */
     public int layoutAndReturnStartIndexOfMoreSuggestions(Context context, SuggestedWords suggestedWords,
                                                           ViewGroup stripView, ViewGroup placerView) {
-        if (suggestedWords instanceof PunctuationSuggestions punc) {
+                if (suggestedWords instanceof PunctuationSuggestions punc) {
             return layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(punc, stripView);
         }
 
+        final boolean isDedicated = isDedicatedRowEnabled();
+        final int activeSuggestionsCount = getActiveSuggestionsCount();
         final int wordCountToShow = suggestedWords.getWordCountToShow();
         final int startIndexOfMoreSuggestions = setupWordViewsAndReturnStartIndexOfMoreSuggestions(
-                suggestedWords, mSuggestionsCountInStrip);
-        final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
+                suggestedWords, activeSuggestionsCount);
+        final int centerPos = isDedicated ? (activeSuggestionsCount / 2) : mCenterPositionInStrip;
+        final TextView centerWordView = mWordViews.get(centerPos);
         final int stripWidth = stripView.getWidth();
-        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
-        if (wordCountToShow == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
-                centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
+        final int centerWidth = getSuggestionWidth(centerPos, stripWidth);
+        if (!isDedicated && (wordCountToShow == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
+                centerWordView.getPaint()) < MIN_TEXT_XSCALE)) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
             final int countInStrip = 1;
@@ -350,7 +353,7 @@ final class SuggestionStripLayoutHelper {
             return (lastIndex == null ? 0 : lastIndex) + 1;
         }
 
-        final int countInStrip = mSuggestionsCountInStrip;
+        final int countInStrip = activeSuggestionsCount;
         mMoreSuggestionsAvailable = (wordCountToShow > countInStrip);
         @SuppressWarnings("unused")
         int x = 0;
@@ -374,6 +377,7 @@ final class SuggestionStripLayoutHelper {
         }
         return startIndexOfMoreSuggestions;
     }
+
 
     /**
      * Format appropriately the suggested word in {@link #mWordViews} specified by

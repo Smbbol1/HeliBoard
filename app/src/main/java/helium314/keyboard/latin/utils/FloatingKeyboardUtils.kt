@@ -119,11 +119,24 @@ object FloatingKeyboardUtils {
         }
     }
 
-    private fun getSuggestionStripHeight(resources: Resources) =
-        if (Settings.getValues().mToolbarMode == ToolbarMode.HIDDEN) 0
-        else resources.getDimension(R.dimen.config_suggestions_strip_height).toInt()
+        private fun getSuggestionStripHeight(view: View): Int {
+        val baseHeight = if (Settings.getValues().mToolbarMode == ToolbarMode.HIDDEN) 0
+        else view.resources.getDimension(R.dimen.config_suggestions_strip_height).toInt()
+        val dedicatedStrip = view.findViewById<View>(R.id.dedicated_suggestions_strip)
+        val dedicatedHeight = if (dedicatedStrip != null && dedicatedStrip.isVisible) {
+            val dp = view.context.prefs().getInt(
+                Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT,
+                Defaults.PREF_DEDICATED_SUGGESTIONS_ROW_HEIGHT
+            ).coerceIn(1, 60)
+            dp.dpToPx(view.resources)
+        } else {
+            0
+        }
+        return baseHeight + dedicatedHeight
+    }
 
     @SuppressLint("ClickableViewAccessibility")
+
     private fun View.setDragListener(view: View) {
         var startX = 0f
         var startY = 0f

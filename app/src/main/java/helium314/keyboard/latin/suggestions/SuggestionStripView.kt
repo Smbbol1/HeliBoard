@@ -423,12 +423,21 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
 
     // overrides: necessarily public, but not used from outside
 
-    override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {
+        override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {
         setToolbarButtonsActivatedStateOnPrefChange(pinnedKeys, key)
         setToolbarButtonsActivatedStateOnPrefChange(toolbar, key)
+        if (key == Defaults.KEY_DEDICATED_SUGGESTIONS_ROW ||
+            key == Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT ||
+            key == Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_COUNT
+        ) {
+            applyDedicatedStripHeight()
+            updateDedicatedStripVisibility(!suggestedWords.isEmpty() && suggestedWords.wordCountToShow > 0)
+            updateKeys()
+        }
         if (key == Settings.PREF_ALWAYS_INCOGNITO_MODE)
             GlobalScope.launch { delay(10); withContext(Dispatchers.Main) { updateKeys() } }
     }
+
 
     override fun onVisibilityChanged(view: View, visibility: Int) {
         super.onVisibilityChanged(view, visibility)

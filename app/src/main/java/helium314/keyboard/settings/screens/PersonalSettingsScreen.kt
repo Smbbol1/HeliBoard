@@ -22,11 +22,15 @@ fun PersonalSettingsScreen(
             Defaults.KEY_MOVE_PINNED_KEYS,
             Defaults.KEY_FLOATING_EXIT_BUTTON,
             Defaults.KEY_FLOATING_PERSISTENT_POS,
-            Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS,
-            Defaults.KEY_REQUEST_MIC_ON_STARTUP
+                        Defaults.KEY_FLOATING_FIT_TOOLBAR_KEYS,
+            Defaults.KEY_REQUEST_MIC_ON_STARTUP,
+            Defaults.KEY_DEDICATED_SUGGESTIONS_ROW,
+            Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT,
+            Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_COUNT
         )
     )
 }
+
 
 
 

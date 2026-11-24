@@ -38,13 +38,14 @@ object FloatingKeyboardUtils {
         val lp = view?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
         view.getWindowVisibleDisplayFrame(windowFrame)
         // On Android 15+ (edge-to-edge) getWindowVisibleDisplayFrame includes the area behind the navbar, so we remove it here
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             val navBarBottom = ViewCompat.getRootWindowInsets(view)
                 ?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom ?: 0
             windowFrame.bottom -= navBarBottom
         }
-        extraHeight = getSuggestionStripHeight(view.resources) + getFloatingHandleHeight(view.resources)
+        extraHeight = getSuggestionStripHeight(view) + getFloatingHandleHeight(view.resources)
         val (x, y) = readPosition(
+
             view.context,
             windowFrame.right - windowFrame.left - Settings.getValues().mFloatingWidth,
             windowFrame.bottom - windowFrame.top - extraHeight.toInt() - actualFloatingHeight

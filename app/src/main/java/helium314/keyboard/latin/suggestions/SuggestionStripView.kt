@@ -179,15 +179,47 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             if (pinnedKeyInToolbar != null && Settings.getValues().mQuickPinToolbarKeys)
                 pinnedKeyInToolbar.background = enabledToolKeyBackground
         }
-        toolbarContainer.doOnNextLayout {
+                toolbarContainer.doOnNextLayout {
             // set min with of the toolbar so the weight of the toolbar keys actually does something
             // todo: results in requestLayout() improperly called by android.widget.LinearLayout during layout: running second layout pass
             toolbar.minimumWidth = toolbarContainer.width
             fitFloatingToolbarKeysIfNeeded()
         }
 
+        applyDedicatedStripHeight()
         updateKeys()
     }
+
+    private fun isDedicatedRowEnabled(): Boolean =
+        context.prefs().getBoolean(Defaults.KEY_DEDICATED_SUGGESTIONS_ROW, Defaults.PREF_DEDICATED_SUGGESTIONS_ROW)
+
+    private fun applyDedicatedStripHeight() {
+        val heightDp = context.prefs().getInt(
+            Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_HEIGHT,
+            Defaults.PREF_DEDICATED_SUGGESTIONS_ROW_HEIGHT
+        ).coerceIn(1, 60)
+        val lp = dedicatedSuggestionsStrip.layoutParams ?: return
+        val heightPx = heightDp.dpToPx(resources)
+        if (lp.height != heightPx) {
+            lp.height = heightPx
+            dedicatedSuggestionsStrip.layoutParams = lp
+        }
+    }
+
+    private fun updateDedicatedStripVisibility(hasSuggestions: Boolean) {
+        if (!isDedicatedRowEnabled()) {
+            dedicatedSuggestionsStrip.isGone = true
+            return
+        }
+        applyDedicatedStripHeight()
+        val shouldShow = hasSuggestions && !isVoiceListening && !isExternalSuggestionVisible
+        dedicatedSuggestionsStrip.isVisible = shouldShow
+        if (shouldShow && toolbarContainer.isVisible) {
+            suggestionsStrip.isGone = true
+            pinnedKeys.isGone = true
+        }
+    }
+
 
     private fun createToolbarKeyLayoutParams(): LinearLayout.LayoutParams {
         return LinearLayout.LayoutParams(

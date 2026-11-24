@@ -395,10 +395,11 @@ final class SuggestionStripLayoutHelper {
      * @param width the maximum width for layout in pixels.
      * @return the {@link TextView} containing the suggested word appropriately formatted.
      */
-    private TextView layoutWord(final Context context, final int positionInStrip, final int width) {
+        private TextView layoutWord(final Context context, final int positionInStrip, final int width) {
         final TextView wordView = mWordViews.get(positionInStrip);
         final CharSequence word = wordView.getText();
-        if (positionInStrip == mCenterPositionInStrip && mMoreSuggestionsAvailable) {
+        final int centerPos = isDedicatedRowEnabled() ? (getActiveSuggestionsCount() / 2) : mCenterPositionInStrip;
+        if (positionInStrip == centerPos && mMoreSuggestionsAvailable) {
             wordView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, mMoreSuggestionsHint);
             // HACK: Align with other TextViews that have no compound drawables.
             wordView.setCompoundDrawablePadding(-mMoreSuggestionsHint.getIntrinsicHeight());
@@ -438,14 +439,32 @@ final class SuggestionStripLayoutHelper {
         ViewLayoutUtils.placeViewAt(debugInfoView, x - infoWidth, 0, infoWidth, debugInfoView.getMeasuredHeight());
     }
 
+    private boolean isDedicatedRowEnabled() {
+        return KtxKt.prefs(mContext).getBoolean(
+                Defaults.KEY_DEDICATED_SUGGESTIONS_ROW, Defaults.PREF_DEDICATED_SUGGESTIONS_ROW);
+    }
+
+    private int getActiveSuggestionsCount() {
+        if (!isDedicatedRowEnabled()) {
+            return mSuggestionsCountInStrip;
+        }
+        final int count = KtxKt.prefs(mContext).getInt(
+                Defaults.KEY_DEDICATED_SUGGESTIONS_ROW_COUNT, Defaults.PREF_DEDICATED_SUGGESTIONS_ROW_COUNT);
+        return Math.max(1, Math.min(count, mWordViews.size()));
+    }
+
     private int getSuggestionWidth(final int positionInStrip, final int maxWidth) {
-        final int paddings = mPadding * mSuggestionsCountInStrip;
-        final int dividers = mDividerWidth * (mSuggestionsCountInStrip - 1);
+        final int activeCount = getActiveSuggestionsCount();
+        final int paddings = mPadding * activeCount;
+        final int dividers = mDividerWidth * (activeCount - 1);
         final int availableWidth = maxWidth - paddings - dividers;
         return (int)(availableWidth * getSuggestionWeight(positionInStrip));
     }
 
     private float getSuggestionWeight(final int positionInStrip) {
+        if (isDedicatedRowEnabled()) {
+            return 1.0f / getActiveSuggestionsCount();
+        }
         if (positionInStrip == mCenterPositionInStrip) {
             return mCenterSuggestionWeight;
         }
@@ -464,15 +483,27 @@ final class SuggestionStripLayoutHelper {
                 mDebugInfoViews.get(positionInStrip).setText(null);
             }
         }
+        final boolean isDedicated = isDedicatedRowEnabled();
+        final int centerPos = maxSuggestionInStrip / 2;
+        final int typedPosWhenAutoCorrect = Math.max(0, centerPos - 1);
         int count = 0;
         int indexInSuggestedWords;
         for (indexInSuggestedWords = 0; indexInSuggestedWords < suggestedWords.size()
                 && count < maxSuggestionInStrip; indexInSuggestedWords++) {
-            final int positionInStrip =
-                    getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
-            if (positionInStrip < 0) {
+            final int positionInStrip;
+            if (isDedicated) {
+                SettingsValues settingsValues = Settings.getValues();
+                boolean shouldOmitTypedWord = shouldOmitTypedWord(suggestedWords.getInputStyle(),
+                        settingsValues.mGestureFloatingPreviewTextEnabled, true);
+                positionInStrip = getPositionInSuggestionStrip(indexInSuggestedWords,
+                        suggestedWords.getWillAutoCorrect(), shouldOmitTypedWord, centerPos, typedPosWhenAutoCorrect);
+            } else {
+                positionInStrip = getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords);
+            }
+            if (positionInStrip < 0 || positionInStrip >= maxSuggestionInStrip) {
                 continue;
             }
+
             final TextView wordView = mWordViews.get(positionInStrip);
             // {@link TextView#getTag()} is used to get the index in suggestedWords at
             // {@link SuggestionStripView#onClick(View)}.

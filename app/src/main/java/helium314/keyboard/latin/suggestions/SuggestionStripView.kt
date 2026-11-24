@@ -345,18 +345,26 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
             direction = if (isRtlLanguage) -1 else 1
             toolbarExpandKey.scaleX = (if (toolbarContainer.visibility != VISIBLE) 1f else -1f) * direction
         }
-        layoutDirection = newLayoutDirection
+                layoutDirection = newLayoutDirection
         suggestionsStrip.layoutDirection = newLayoutDirection
+        dedicatedSuggestionsStrip.layoutDirection = newLayoutDirection
     }
 
     fun setToolbarVisibility(toolbarVisible: Boolean) {
-        pinnedKeys.isVisible = !toolbarVisible
-        suggestionsStrip.isVisible = !toolbarVisible
-        toolbarContainer.isVisible = toolbarVisible
+        if (isDedicatedRowEnabled()) {
+            pinnedKeys.isVisible = !toolbarVisible
+            suggestionsStrip.isGone = true
+            toolbarContainer.isVisible = toolbarVisible
+        } else {
+            pinnedKeys.isVisible = !toolbarVisible
+            suggestionsStrip.isVisible = !toolbarVisible
+            toolbarContainer.isVisible = toolbarVisible
+        }
 
         if (DEBUG_SUGGESTIONS) {
+            val activeStrip = if (isDedicatedRowEnabled()) dedicatedSuggestionsStrip else suggestionsStrip
             for (view in debugInfoViews) {
-                view.visibility = suggestionsStrip.visibility
+                view.visibility = activeStrip.visibility
             }
         }
 
@@ -367,16 +375,21 @@ class SuggestionStripView(context: Context, attrs: AttributeSet?, defStyle: Int)
         clear()
         setRtl(isRtlLanguage)
         suggestedWords = suggestions
+        val targetStrip = if (isDedicatedRowEnabled()) dedicatedSuggestionsStrip else suggestionsStrip
         startIndexOfMoreSuggestions = layoutHelper.layoutAndReturnStartIndexOfMoreSuggestions(
-            context, suggestedWords, suggestionsStrip, this
+            context, suggestedWords, targetStrip, this
         )
         isExternalSuggestionVisible = false
+        val hasWords = !suggestions.isEmpty() && suggestions.wordCountToShow > 0
+        updateDedicatedStripVisibility(hasWords)
         updateKeys()
     }
 
     fun setExternalSuggestionView(view: View?, addCloseButton: Boolean) {
         clear()
         isExternalSuggestionVisible = true
+        updateDedicatedStripVisibility(false)
+
 
         if (addCloseButton) {
             val wrapper = LinearLayout(context)
